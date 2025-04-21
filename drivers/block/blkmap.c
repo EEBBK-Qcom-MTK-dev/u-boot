@@ -3,6 +3,7 @@
  * Copyright (c) 2023 Addiva Elektronik
  * Author: Tobias Waldekranz <tobias@waldekranz.com>
  */
+#define LOG_DEBUG
 
 #include <blk.h>
 #include <blkmap.h>
@@ -183,6 +184,7 @@ int blkmap_map_linear(struct udevice *dev, lbaint_t blknr, lbaint_t blkcnt,
 	lbd = dev_get_uclass_plat(lblk);
 	if (lbd->blksz != bd->blksz) {
 		/* update to match the mapped device */
+		debug("Logical device block size mismatch, fixing %lu to %lu\n", bd->blksz, lbd->blksz);
 		bd->blksz = lbd->blksz;
 		bd->log2blksz = LOG2(bd->blksz);
 	}
