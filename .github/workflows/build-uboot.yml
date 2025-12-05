@@ -84,5 +84,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: u-boot-build
-          path: .output/*.bin
+          path: .output/u-boot-nodtb.bin
           retention-days: 7
