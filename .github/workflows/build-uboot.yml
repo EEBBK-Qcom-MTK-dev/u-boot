@@ -51,7 +51,7 @@ jobs:
 
       - name: Build u-boot with upstream DTS
         run: |
-          make CROSS_COMPILE=aarch64-linux-gnu- O=.output DEVICE_TREE=qcom/sda660-inforce-ifc6560 -j$(nproc)
+          make CROSS_COMPILE=aarch64-linux-gnu- O=.output DEVICE_TREE=qcom/sda660-eebbk-h7000 -j$(nproc)
 
       - name: Prepare .config using generic sdm660-phone config for downstream DTS
         run: |
