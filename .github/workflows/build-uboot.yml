@@ -9,44 +9,56 @@ on:
     tags:
       - v*-sdm660
   workflow_dispatch:
+
 jobs:
   build-uboot:
-    runs-on: [self-hosted, Linux, X64, u-boot]
+    runs-on: ubuntu-22.04
     steps:
-      - name: Print debug info and some pre-run checks
+      - name: Install dependencies
         run: |
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          echo "GITHUB_BASE_REF:  $GITHUB_BASE_REF"
-          echo "GITHUB_HEAD_REF:  $GITHUB_HEAD_REF"
-          echo "GITHUB_REF:       $GITHUB_REF"
-          echo -n "whoami: " ; whoami
-          echo -n "groups: " ; groups
-          echo "doas permissions check:"
-          doas -C /etc/doas.conf apt update
-          echo "Cross-gcc version:"
-          aarch64-linux-gnu-gcc -v
-      - name: Update ubuntu packages
-        run: |
-          doas -n apt update
-          doas -n apt -y upgrade
+          sudo apt-get update
+          sudo apt-get install -y \
+            gcc-aarch64-linux-gnu \
+            make \
+            git \
+            device-tree-compiler \
+            flex \
+            bison \
+            libssl-dev \
+            bc
+
       - name: Checkout source from git
         uses: actions/checkout@v4
         with:
           clean: true
           fetch-depth: 0
+
+      - name: Print debug info
+        run: |
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          echo "GITHUB_BASE_REF:  $GITHUB_BASE_REF"
+          echo "GITHUB_HEAD_REF:  $GITHUB_HEAD_REF"
+          echo "GITHUB_REF:       $GITHUB_REF"
+          echo "Cross-gcc version:"
+          aarch64-linux-gnu-gcc --version
+
       - name: Prepare .config using generic sdm660-phone config for upstream DTS
         run: |
           mkdir -p .output
           make CROSS_COMPILE=aarch64-linux-gnu- O=.output qcom_defconfig qcom-sdm660-phone.config
+
       - name: Build u-boot with upstream DTS
         run: |
           make CROSS_COMPILE=aarch64-linux-gnu- O=.output DEVICE_TREE=qcom/sda660-inforce-ifc6560 -j$(nproc)
+
       - name: Prepare .config using generic sdm660-phone config for downstream DTS
         run: |
           make CROSS_COMPILE=aarch64-linux-gnu- O=.output qcom_defconfig qcom-sdm660-phone.config qcom-downstream.config
+
       - name: Build u-boot with downstream DTS
         run: |
           make CROSS_COMPILE=aarch64-linux-gnu- O=.output -j$(nproc)
+
       - name: List all compiled upstream DTBs
         run: |
           echo "Contents of .output/dts/upstream/src/arm64/qcom/ :"
@@ -58,3 +70,12 @@ jobs:
         run: |
           echo "Contents of .output/arch/arm/dts/qcom/ :"
           ls -l .output/arch/arm/dts/qcom/*.dtb
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: u-boot-build
+          path: |
+            .output/u-boot*
+            .output/arch/arm/dts/qcom/*.dtb
+          retention-days: 7
