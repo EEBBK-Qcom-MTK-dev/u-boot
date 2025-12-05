@@ -13,7 +13,6 @@
 #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
 
 /delete-node/ &adsp_region;
-/delete-node/ &cdsp_region;
 /delete-node/ &mba_region;
 /delete-node/ &zap_shader_region;
 
@@ -215,10 +214,6 @@
 	monitored-battery = <&battery>;
 	power-supplies = <&pm660_charger>;
 
-	status = "okay";
-};
-
-&pm660_haptics {
 	status = "okay";
 };
 
