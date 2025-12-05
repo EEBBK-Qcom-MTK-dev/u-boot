@@ -84,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: u-boot-build
-          path: .output/u-boot-dtb.bin
+          path: .output/u-boot-nodtb.bin
           retention-days: 7
           
       - name: Upload build artifacts(dtb2)
