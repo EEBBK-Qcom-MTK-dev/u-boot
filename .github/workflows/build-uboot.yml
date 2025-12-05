@@ -73,11 +73,16 @@ jobs:
           echo "Contents of .output/arch/arm/dts/qcom/ :"
           ls -l .output/arch/arm/dts/qcom/*.dtb
 
-      - name: Upload build artifacts
+      - name: Upload build artifacts(dtb)
+        uses: actions/upload-artifact@v4
+        with:
+          name: u-boot-dtbs
+          path: .output/arch/arm/dts/qcom/*.dtb
+          retention-days: 7
+
+      - name: Upload build artifacts(image)
         uses: actions/upload-artifact@v4
         with:
           name: u-boot-build
-          path:
-           .output/arch/arm/dts/qcom/*.dtb
-           .output/u-boot*
+          path: .output/u-boot*
           retention-days: 7
