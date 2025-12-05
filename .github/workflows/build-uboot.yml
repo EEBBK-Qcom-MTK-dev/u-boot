@@ -77,7 +77,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: u-boot-build
-          path: |
-            .output/u-boot*
-            .output/arch/arm/dts/qcom/*.dtb
+          path: .output/arch/arm/dts/qcom/*.dtb
           retention-days: 7
