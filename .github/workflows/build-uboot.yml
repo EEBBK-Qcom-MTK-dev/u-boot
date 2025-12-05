@@ -25,7 +25,9 @@ jobs:
             flex \
             bison \
             libssl-dev \
-            bc
+            bc \
+            libgnutls28-dev \
+            pkg-config
 
       - name: Checkout source from git
         uses: actions/checkout@v4
