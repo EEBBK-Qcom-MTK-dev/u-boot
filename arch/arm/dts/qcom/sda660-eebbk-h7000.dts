@@ -144,62 +144,6 @@
 	memory-region = <&zap_shader_region>;
 };
 
-&mdss {
-	status = "okay";
-};
-
-&mdss_dsi0 {
-	status = "okay";
-
-	#address-cells = <1>;
-	#size-cells = <0>;
-	vdd-supply = <&vreg_l1b_0p925>;
-	vdda-supply = <&vreg_l1a_1p225>;
-
-	panel: panel@0 {
-		compatible = "truly,nt35597-2K-display";
-		reg = <0>;
-		vdda-supply = <&vreg_l6b_3p3>;
-		vdispp-supply = <&lcdb_fixed>;
-		vdispn-supply = <&lcdb_fixed>;
-		pinctrl-names = "default", "suspend";
-		pinctrl-0 = <&mdss_dsi_active>;
-		pinctrl-1 = <&mdss_dsi_suspend>;
-
-		reset-gpios = <&tlmm 53 GPIO_ACTIVE_LOW>;
-		mode-gpios = <&tlmm 59 GPIO_ACTIVE_HIGH>;
-		ports {
-                    #address-cells = <1>;
-                    #size-cells = <0>;
-
-                    port@0 {
-                        reg = <0>;
-
-                        panel0_in: endpoint {
-                            remote-endpoint = <&mdss_dsi0_out>;
-                       };
-                    };
-
-                    port@1 {
-                        reg = <1>;
-
-                        panel1_in: endpoint {
-                            remote-endpoint = <&mdss_dsi1_out>;
-                        };
-                    };
-                };
-        };
-};
-
-&mdss_dsi0_out {
-	data-lanes = <0 1 2 3>;
-	remote-endpoint = <&panel0_in>;
-};
-
-&mdss_dsi1_out {
-	data-lanes = <0 1 2 3>;
-	remote-endpoint = <&panel1_in>;
-};
 &mmss_smmu {
 	status = "okay";
 };
@@ -280,8 +224,8 @@
 		};
 
 		vreg_s2b_1p05: s2 {
-			regulator-min-microvolt = <1049000>;
-			regulator-max-microvolt = <1049000>;
+			regulator-min-microvolt = <1050000>;
+			regulator-max-microvolt = <1050000>;
 			regulator-enable-ramp-delay = <200>;
 			regulator-ramp-delay = <0>;
 		};
@@ -581,27 +525,6 @@
 		drive-strength = <8>;
 		bias-pull-up;
 	};
-	
-	mdss_dsi_active: mdss-dsi-active-state {
-		pins = "gpio53";
-		function = "gpio";
-		drive-strength = <8>;
-		bias-disable;
-	};
-
-    mdss_dsi_suspend: mdss-dsi-suspend-state {
-		pins = "gpio53";
-		function = "gpio";
-		drive-strength = <2>;
-		bias-pull-down;
-	};
-		
-	mdss_te_active: mdss-te-active-state {
-	    pins = "gpio59";
-		function = "mdp_vsync";
-		drive-strength = <2>;
-		bias-pull-down;
-	};
 };
 
 &usb3 {
@@ -623,14 +546,11 @@
 
 &sdhc_1 {
 	status = "okay";
-	bus-width = <8>;
-	non-removable;
 	supports-cqe;
 
 	vmmc-supply = <&vreg_l4b_2p95>;
 	vqmmc-supply = <&vreg_l8a_1p8>;
 
-	mmc-ddr-1_8v;
 	mmc-hs200-1_8v;
 	mmc-hs400-1_8v;
 	mmc-hs400-enhanced-strobe;
